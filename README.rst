@@ -4,7 +4,9 @@ yell
 
 Pluggable notifications for your Python apps. 
 
-`yell` is not a notification storage or delivery backend but a set of APIs that make it easy to add your own delivery mechanisms.
+`yell` is not a notification storage or delivery backend but a set of APIs that make it easy to add your own delivery mechanisms. 
+
+The full documentation is available `here <http://yell.readthedocs.org/en/latest/index.html>`.
 
 
 Using yelling decorators
@@ -53,3 +55,4 @@ Using yelling classes
 
     # Only send emails
     yell("buffalo", user = User.objects.get(id=1), backends = [BuffaloEmail])
+
