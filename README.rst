@@ -6,7 +6,7 @@ Pluggable notifications for your Python apps.
 
 `yell` is not a notification storage or delivery backend but a set of APIs that make it easy to add your own delivery mechanisms. 
 
-The full documentation is available `here <http://yell.readthedocs.org/en/latest/index.html>`.
+The full documentation is available `here <http://yell.readthedocs.org/en/latest/index.html>`_.
 
 
 Using yelling decorators
