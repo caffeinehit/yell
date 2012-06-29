@@ -57,3 +57,16 @@ Using notification classes
     # Only send emails
     notify("buffalo", user = User.objects.get(id=1), backends = [BuffaloEmail])
 
+
+Changelog
+---------
+
+**v0.2**
+
+* Made the API saner to use (*backwards incompatible*):  
+
+  - ``yell.Yell`` became ``yell.Notification``
+  - ``yell.yell`` became ``yell.notify``
+  - ``yell.decorators.yelling`` became ``yell.decorators.notification``
+
+
