@@ -1,22 +1,22 @@
 from __future__ import absolute_import
 from celery.task import Task
-from yell import Yell, yell, registry
+from yell import Notification, notify, registry
 
-class CeleryYellingTask(Task):
-    """ Dispatch and run the yelling """
-    def run(self, name=None, yeller=None, *args, **kwargs):
+class CeleryNotificationTask(Task):
+    """ Dispatch and run the notification. """
+    def run(self, name=None, backend=None, *args, **kwargs):
         """
         The Celery task. 
         
-        Delivers the notification via all backends returned by :param:`yeller`.
+        Delivers the notification via all backends returned by :param:`backend`.
         """
-        assert name is not None, "No 'name' specified to yell"
-        assert yeller is not None, "No 'yeller' specified to yell with"
+        assert name is not None, "No 'name' specified to notify"
+        assert backend is not None, "No 'backend' specified to notify with"
         
-        backends = yeller().get_backends(*args, **kwargs)
-        yell(name, backends=backends, *args, **kwargs)
+        backends = backend().get_backends(*args, **kwargs)
+        notify(name, backends=backends, *args, **kwargs)
     
-class CeleryYell(Yell):
+class CeleryNotification(Notification):
     """ 
     Delivers notifications through Celery. 
     
@@ -24,26 +24,26 @@ class CeleryYell(Yell):
     
     ::
     
-        from yell import yell, Yell
+        from yell import notify, Notification
     
-        class EmailYell(Yell):
-            yell = 'async'
-            def yell(self, *args, **kwargs):
+        class EmailNotification(Notification):
+            name = 'async'
+            def notify(self, *args, **kwargs):
                 # Deliver email 
                 
-        class DBYell(Yell):
-            yell = 'async'
-            def yell(self, *args, **kwargs):
+        class DBNotification(Notification):
+            name = 'async'
+            def notify(self, *args, **kwargs):
                 # Save to database
         
-        class AsyncYell(CeleryYell):
-            yell = 'async'        
+        class AsyncNotification(CeleryNotification):
+            name = 'async'        
         
-        yell('async', backends = [AsyncYell],
+        notify('async', backends = [AsyncNotification],
             text = "This notification is routed through Celery before being sent and saved")
     
-    In the above example when calling :attr:`yell.yell` will invoke ``EmailYell`` and
-    ``DBYell`` once the task was delivered through Celery.
+    In the above example when calling :attr:`yell.notify` will invoke ``EmailNotification`` and
+    ``DBNotification`` once the task was delivered through Celery.
         
     """
     name = None
@@ -55,14 +55,14 @@ class CeleryYell(Yell):
         """
         Return all backends the task should use to deliver notifications.
         By default all backends with the same :attr:`name` except for subclasses
-        of :class:`CeleryYell` will be used.
+        of :class:`CeleryNotifications` will be used.
         """
-        return filter(lambda cls: not isinstance(cls, self.__class__), registry.yells[self.yell])
+        return filter(lambda cls: not isinstance(cls, self.__class__), registry.notifications[self.name])
     
-    def yell(self, *args, **kwargs):
+    def notify(self, *args, **kwargs):
         """ 
         Dispatches the notification to Celery
         """
-        return CeleryYellingTask.delay(name=self.name, yeller=self.__class__, *args, **kwargs)
+        return CeleryNotificationTask.delay(name=self.name, backend=self.__class__, *args, **kwargs)
 
 

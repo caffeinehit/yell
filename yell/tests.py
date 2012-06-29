@@ -1,5 +1,5 @@
-from yell import yell, Yell
-from yell.decorators import yelling
+from yell import notify, Notification
+from yell.decorators import notification
 
 
 try:
@@ -7,24 +7,24 @@ try:
 except ImportError:
     import unittest
     
-@yelling(name='decorator')
-def decorator_yell0(*args, **kwargs):
+@notification(name='decorator')
+def decorator_notification0(*args, **kwargs):
     return 'Decorator 0', args, kwargs
 
-@yelling(name='decorator')
-def decorator_yell1(*args, **kwargs):
+@notification(name='decorator')
+def decorator_notification1(*args, **kwargs):
     return 'Decorator 1', args, kwargs
 
-class ClassYell0(Yell):
+class ClassNotification0(Notification):
     name = 'class'
     
-    def yell(self, *args, **kwargs):
+    def notify(self, *args, **kwargs):
         return 'Class 0', args, kwargs
 
-class ClassYell1(Yell):
+class ClassNotification1(Notification):
     name = 'class'
     
-    def yell(self, *args, **kwargs):
+    def notify(self, *args, **kwargs):
         return 'Class 1', args, kwargs
 
 class AssertMixin(object):
@@ -40,35 +40,35 @@ class AssertMixin(object):
             self.assertTrue('Kwarg2' in result[2].values())
             
 
-class TestDecoratorYell(AssertMixin, unittest.TestCase):
+class TestDecoratorNotification(AssertMixin, unittest.TestCase):
     retval = 'Decorator'
 
-    def test_yelling_with_decorator(self):
-        results = yell('decorator', 'Arg1', 'Arg2', kwarg1='Kwarg1', kwarg2='Kwarg2')
+    def test_notifying_with_decorator(self):
+        results = notify('decorator', 'Arg1', 'Arg2', kwarg1='Kwarg1', kwarg2='Kwarg2')
         self.assertEqual(2, len(results))           
         self._assert_results(results)
 
-        results = decorator_yell0.yell('Arg1', 'Arg2', kwarg1='Kwarg1', kwarg2='Kwarg2')
+        results = decorator_notification0.notify('Arg1', 'Arg2', kwarg1='Kwarg1', kwarg2='Kwarg2')
         self._assert_results(results)
         self.assertEqual(2, len(results))           
     
 
-    def test_yelling_once_with_decorator(self):
-        results = decorator_yell0.yell_once('Arg1', 'Arg2', kwarg1='Kwarg1', kwarg2='Kwarg2')
+    def test_notifying_once_with_decorator(self):
+        results = decorator_notification0.notify_once('Arg1', 'Arg2', kwarg1='Kwarg1', kwarg2='Kwarg2')
         self.assertEqual(1, len(results))
         self._assert_results(results)
 
 
-class TestClassYell(AssertMixin, unittest.TestCase):
+class TestClassNotification(AssertMixin, unittest.TestCase):
     retval = 'Class'
     
-    def test_yelling_with_class(self):
-        results = yell('class', 'Arg1', 'Arg2', kwarg1='Kwarg1', kwarg2='Kwarg2')
+    def test_notifying_with_class(self):
+        results = notify('class', 'Arg1', 'Arg2', kwarg1='Kwarg1', kwarg2='Kwarg2')
         self.assertEqual(2, len(results))           
         self._assert_results(results)
 
-    def test_yelling_once_with_class(self):
-        results = yell('class', 'Arg1', 'Arg2', kwarg1='Kwarg1', kwarg2='Kwarg2', backends=[ClassYell0])
+    def test_notifying_once_with_class(self):
+        results = notify('class', 'Arg1', 'Arg2', kwarg1='Kwarg1', kwarg2='Kwarg2', backends=[ClassNotification0])
         self.assertEqual(1, len(results))
         self._assert_results(results)
 

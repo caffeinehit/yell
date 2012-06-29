@@ -1,2 +1,2 @@
-yells = {}
-""" Registry mapping yell names to backends """
+notifications = {}
+""" Registry mapping notification names to backends """

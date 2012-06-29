@@ -3,11 +3,11 @@ from __future__ import absolute_import
 from django.conf import settings
 from django import template
 from django.core.mail import send_mail, EmailMultiAlternatives
-from yell import Yell
+from yell import Notification
 import mimetypes
 
 
-class EmailBackend(Yell):
+class EmailBackend(Notification):
     """
     Send emails via :attr:`django.core.mail.send_mail`
     """
@@ -36,7 +36,7 @@ class EmailBackend(Yell):
     def get_to(self, *args, **kwargs):
         return kwargs.get('to')
     
-    def yell(self, *args, **kwargs):
+    def notify(self, *args, **kwargs):
         
         return send_mail(
             self.get_subject(*args, **kwargs),
@@ -68,7 +68,7 @@ class MultipartEmailBackend(EmailBackend):
     def get_default_body(self, *args, **kwargs):
         return self.get_body(*args, **kwargs)[self.default_content_type]
     
-    def yell(self, *args, **kwargs):        
+    def notify(self, *args, **kwargs):        
         message = EmailMultiAlternatives(
             self.get_subject(*args, **kwargs),
             self.get_default_body(*args, **kwargs),

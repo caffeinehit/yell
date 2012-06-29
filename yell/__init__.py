@@ -1,62 +1,62 @@
-__version__ = "0.1"
+__version__ = "0.2"
 
 import registry
 
-class MetaYell(type):
+class MetaNotification(type):
     """ 
-    Metaclass that stores all yells in the registry.
+    Metaclass that stores all notifications in the registry.
     """
     def __new__(cls, name, bases, attrs):
-        Yell = super(MetaYell, cls).__new__(cls, name, bases, attrs)
+        Notification = super(MetaNotification, cls).__new__(cls, name, bases, attrs)
 
-        if Yell.name is not None:
-            registry.yells[Yell.name] = registry.yells.get(Yell.name, []) + [Yell]
+        if Notification.name is not None:
+            registry.notifications[Notification.name] = registry.notifications.get(Notification.name, []) + [Notification]
 
-        return Yell
+        return Notification
 
 
-class Yell(object):
+class Notification(object):
     """
     Base class for any kind of notifications. Inherit from this class to create
     your own notification types and backends. 
     
-    Subclasses need to implement :meth:`yell`.
+    Subclasses need to implement :meth:`notify`.
     """
-    __metaclass__ = MetaYell
+    __metaclass__ = MetaNotification
 
     name = None
     """
-    A name for this yell.
+    A name for this notification.
     """
     
-    def yell(self, *args, **kwargs):
+    def notify(self, *args, **kwargs):
         """
         A method that delivers a notification.
         """
         raise NotImplementedError
 
-def yell(name, *args, **kwargs):
+def notify(name, *args, **kwargs):
     """
     Send notifications. If ``backends==None``, all backends with the same name
     will be used to deliver a notification. 
     
     If ``backends`` is a list, only the specified backends will be used.
     
-    :param name: The yell to send
+    :param name: The notification to send
     :param backends: A list of backends to be used or ``None`` to use all associated backends
     """
-    assert name in registry.yells, "'{0}' is not a valid yell.".format(repr(name))
+    assert name in registry.notifications, "'{0}' is not a valid notification.".format(repr(name))
     
     backends = kwargs.pop('backends', None)
     
     if backends is None:
-        backends = registry.yells[name]
+        backends = registry.notifications[name]
     
     results = []
 
     for Backend in backends:
         backend = Backend()
-        results.append(backend.yell(*args, **kwargs))
+        results.append(backend.notify(*args, **kwargs))
     
     return results
 

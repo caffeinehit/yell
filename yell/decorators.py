@@ -1,15 +1,15 @@
-from yell import Yell, yell
+from yell import Notification, notify
 
-class DecoratedYell(Yell):
+class DecoratedNotification(Notification):
     func = None
     """
     The function that has been decorated. 
     """
 
-    def yell(self, *args, **kwargs):
+    def notify(self, *args, **kwargs):
         return self.func(*args, **kwargs)
 
-def yelling(name=None, backends=None):
+def notification(name=None, backends=None):
     """
     Decorator to simplify creation of notification backends. 
     
@@ -18,7 +18,7 @@ def yelling(name=None, backends=None):
     ::
     
         from yell.decorators import notification
-        from yell import yell 
+        from yell import notify 
     
         @notification('like')
         def like_email(user, obj):
@@ -34,38 +34,38 @@ def yelling(name=None, backends=None):
             pass
         
         # Use all backends
-        yell('like', user = user, obj = obj)        
-        like.yell(user = user, obj = obj)
+        notify('like', user = user, obj = obj)        
+        like.notify(user = user, obj = obj)
         
         # Only use the email backend
-        like_email.yell_once(user = user, obj = obj)
+        like_email.notify_once(user = user, obj = obj)
         
     """
 
     def wrapper(func):
         def funcwrapper(self, *args, **kwargs):
-            """ Wrapping the yelling function so it doesn't receive `self` """
+            """ Wrapping the notification function so it doesn't receive `self` """
             return func(*args, **kwargs)
         
-        YellCls = type('%sYell' % name.lower().title(), (DecoratedYell,), {
+        NotificationCls = type('%sNotification' % name.lower().title(), (DecoratedNotification,), {
             'func': funcwrapper,
             'name': name
         })
 
-        def yell_all(*args, **kwargs):
+        def notify_all(*args, **kwargs):
             """
-            Sends this yell off to every backend with the configured name. 
+            Sends this notification off to every backend with the configured name. 
             """
-            return yell(name, *args, **kwargs)
+            return notify(name, *args, **kwargs)
         
-        def yell_once(*args, **kwargs):
+        def notify_once(*args, **kwargs):
             """
-            Sends this yell off only to the current backend.
+            Sends this notification off only to the current backend.
             """
-            return yell(name, backends=[YellCls], *args, **kwargs)
+            return notify(name, backends=[NotificationCls], *args, **kwargs)
         
-        func.yell = yell_all
-        func.yell_once = yell_once
+        func.notify = notify_all
+        func.notify_once = notify_once
         
         return func
         
