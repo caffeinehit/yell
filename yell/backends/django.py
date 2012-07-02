@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-
+import os
 from django.conf import settings
 from django import template
 from django.core.mail import send_mail, EmailMultiAlternatives
@@ -117,7 +117,7 @@ class TemplatedEmailBackend(MultipartEmailBackend):
         Get the path to a given template name. Override if you wish to
         store your templates in a custom folder outside of `yell/`.
         """
-        return os.paht.join('yell', '{0}{1}'.format(name, ext))
+        return os.path.join('yell', '{0}{1}'.format(name, ext))
 
     def get_body(self, *args, **kwargs):
         """ 
