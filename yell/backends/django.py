@@ -76,7 +76,7 @@ class MultipartEmailBackend(EmailBackend):
             self.get_to(*args, **kwargs)
         )
         
-        for content_type, body in self.get_body(*args, **kwargs):
+        for content_type, body in self.get_body(*args, **kwargs).iteritems():
             if content_type == self.default_content_type: continue
             message.attach_alternative(body, content_type)
         
