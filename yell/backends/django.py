@@ -4,7 +4,7 @@ from django.conf import settings
 from django import template
 from django.core.mail import send_mail, EmailMultiAlternatives
 from yell import Notification
-import mimetypes
+
 
 
 class EmailBackend(Notification):
@@ -101,7 +101,10 @@ class TemplatedEmailBackend(MultipartEmailBackend):
     * `yell/signup.html`
     
     """
-    content_types = ['text/plain', 'text/html']
+    content_types = (
+        ('text/plain', '.txt'),
+        ('text/html', '.html')
+    )
     """
     Default content types to render
     """
@@ -109,15 +112,22 @@ class TemplatedEmailBackend(MultipartEmailBackend):
     # Memoize
     _body = None
     
+    def get_path(self, name, ext):
+        """
+        Get the path to a given template name. Override if you wish to
+        store your templates in a custom folder outside of `yell/`.
+        """
+        return os.paht.join('yell', '{0}{1}'.format(name, ext))
+
     def get_body(self, *args, **kwargs):
         """ 
-        Render message bodies by guessing the file extension from 
-        :attr:`content_types`
+        Render message bodies by using all the content types defined
+        in :attr:`content_types`
         """
         if self._body is None:
             self._body = {}
-            for ctype in self.content_types:
-                tpl = template.loader.get_template('yell/%s%s' % (self.name, mimetypes.guess_extension(ctype)))
+            for ctype, ext in self.content_types:
+                tpl = template.loader.get_template(self.get_path(self.name, ext))
                 self._body[ctype] = tpl.render(template.Context(kwargs))
         return self._body
     

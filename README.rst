@@ -61,6 +61,13 @@ Using notification classes
 Changelog
 ---------
 
+**v0.3**
+
+* *backwards incompatible* Guessing the file extension with the
+  ``mimetypes`` package proved to be inconsistent across systems.
+  ``TemplatedEmailBackend`` now makes uses explicitly declared file
+  extensions.
+
 **v0.2**
 
 * Made the API saner to use (*backwards incompatible*):  
