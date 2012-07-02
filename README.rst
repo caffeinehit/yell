@@ -65,7 +65,7 @@ Changelog
 
 * *backwards incompatible* Guessing the file extension with the
   ``mimetypes`` package proved to be inconsistent across systems.
-  ``TemplatedEmailBackend`` now makes uses explicitly declared file
+  ``TemplatedEmailBackend`` now makes use of explicitly declared file
   extensions.
 
 **v0.2**
