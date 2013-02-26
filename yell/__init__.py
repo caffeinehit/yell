@@ -1,4 +1,4 @@
-__version__ = "0.3.1"
+__version__ = "0.3.2"
 
 import registry
 
@@ -11,6 +11,9 @@ class MetaNotification(type):
 
         if Notification.name is not None:
             registry.notifications[Notification.name] = registry.notifications.get(Notification.name, []) + [Notification]
+
+            sendfn = lambda *args, **kwargs: notify(Notification.name, backends = [Notification], *args, **kwargs)
+            setattr(Notification, 'send', staticmethod(sendfn))
 
         return Notification
 

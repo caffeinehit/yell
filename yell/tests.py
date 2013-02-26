@@ -72,4 +72,7 @@ class TestClassNotification(AssertMixin, unittest.TestCase):
         self.assertEqual(1, len(results))
         self._assert_results(results)
 
-
+    def test_notifying_with_send_static_method(self):
+        results = ClassNotification0.send('Arg1', 'Arg2', kwarg1='Kwarg1', kwarg2='Kwarg2')
+        self.assertEqual(1, len(results))
+        self._assert_results(results)
