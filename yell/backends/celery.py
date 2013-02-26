@@ -57,7 +57,8 @@ class CeleryNotification(Notification):
         By default all backends with the same :attr:`name` except for subclasses
         of :class:`CeleryNotifications` will be used.
         """
-        return filter(lambda cls: not isinstance(cls, self.__class__), registry.notifications[self.name])
+        return filter(lambda cls: not issubclass(cls, self.__class__), registry.notifications[self.name])
+
     
     def notify(self, *args, **kwargs):
         """ 
